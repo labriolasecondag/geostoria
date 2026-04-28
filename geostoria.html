@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ripasso Geostoria — Da Augusto all'Ottocento</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1612;
+    --ink-muted: #5c5448;
+    --ink-faint: #9a9086;
+    --parchment: #f5f0e8;
+    --parchment-dark: #ede7d9;
+    --parchment-deep: #e0d8c8;
+    --accent: #8b3a1a;
+    --accent-light: #c4622d;
+    --accent-pale: #f5e8e0;
+    --gold: #b8922a;
+    --gold-pale: #f7f0dc;
+    --teal: #1a5c5c;
+    --teal-pale: #e0efef;
+    --border: rgba(26,22,18,0.12);
+    --border-strong: rgba(26,22,18,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--parchment);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.65;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.015) 40px,
+      rgba(255,255,255,0.015) 80px
+    );
+  }
+  .header-ornament {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 300;
+  }
+  header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  header .subtitle {
+    font-size: 1rem;
+    color: rgba(245,240,232,0.6);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--parchment-dark);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .progress-label { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.05em; white-space: nowrap; font-weight: 500; }
+  .progress-bar { flex: 1; height: 4px; background: var(--parchment-deep); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; width: 0%; }
+  .progress-count { font-size: 12px; color: var(--ink-muted); white-space: nowrap; }
+
+  /* ── NAV TABS ── */
+  nav {
+    background: var(--parchment-dark);
+    border-bottom: 1px solid var(--border-strong);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 0.85rem 1.2rem;
+    font-size: 13px;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 400;
+    color: var(--ink-muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* ── MAIN LAYOUT ── */
+  main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* ── SECTION HEADING ── */
+  .section-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-heading h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .section-era {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ── TOPIC GRID ── */
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .topic-card {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.18s;
+    transform-origin: bottom;
+  }
+  .topic-card:hover { border-color: var(--border-strong); background: var(--parchment-dark); transform: translateY(-1px); }
+  .topic-card:hover::before { transform: scaleY(1); }
+  .topic-card.done { border-color: var(--teal); }
+  .topic-card.done::before { background: var(--teal); transform: scaleY(1); }
+  .done-mark {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-size: 11px;
+    color: var(--teal);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .topic-name { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+  .topic-date { font-size: 11px; color: var(--ink-faint); font-style: italic; }
+
+  /* ── DETAIL PANEL ── */
+  .detail-panel {
+    background: #fff;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .detail-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+  .detail-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 600; color: var(--ink); }
+  .detail-date { font-size: 11px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-top: 3px; }
+  .close-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+  }
+  .close-btn:hover { background: var(--parchment-dark); }
+  .detail-body { font-size: 14px; line-height: 1.8; color: var(--ink-muted); }
+  .detail-body p { margin-bottom: 0.6rem; }
+  .detail-body strong { color: var(--ink); font-weight: 500; }
+  .detail-actions { display: flex; gap: 8px; margin-top: 1.25rem; flex-wrap: wrap; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    padding: 8px 18px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Source Serif 4', serif;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent-light); }
+  .btn-secondary {
+    padding: 8px 16px;
+    background: none;
+    color: var(--ink-muted);
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Source Serif 4', serif;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--parchment-dark); }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding: 0.5rem 0 0.5rem 2rem; }
+  .timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 1px; background: var(--border-strong); }
+  .tl-item { position: relative; margin-bottom: 1.5rem; }
+  .tl-dot {
+    position: absolute;
+    left: -26px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--parchment);
+    border: 2px solid var(--accent);
+  }
+  .tl-era {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .tl-year { font-size: 12px; color: var(--gold); font-style: italic; margin-right: 6px; }
+  .tl-event { font-size: 14px; font-weight: 500; color: var(--ink); display: inline; }
+  .tl-desc { font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+  .tl-group { margin-bottom: 1.5rem; }
+  .tl-group-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── QUIZ ── */
+  .quiz-wrap { max-width: 600px; }
+  .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .quiz-counter { font-size: 12px; color: var(--ink-faint); font-style: italic; }
+  .quiz-score { font-size: 13px; color: var(--ink-muted); }
+  .quiz-score span { font-weight: 500; color: var(--accent); }
+  .quiz-card {
+    background: #fff;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .quiz-q {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+    line-height: 1.45;
+    margin-bottom: 1.25rem;
+  }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: 'Source Serif 4', serif;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.14s;
+    line-height: 1.4;
+  }
+  .quiz-opt:hover:not(:disabled) { background: var(--parchment-dark); border-color: var(--border-strong); }
+  .quiz-opt.correct { background: #e8f5ee; border-color: var(--teal); color: #0d4040; }
+  .quiz-opt.wrong { background: #fbeae8; border-color: #b84030; color: #6b1a10; }
+  .quiz-feedback {
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-top: 8px;
+  }
+  .quiz-feedback.ok { background: #e8f5ee; color: #0d4040; border-left: 3px solid var(--teal); }
+  .quiz-feedback.ko { background: #fbeae8; color: #6b1a10; border-left: 3px solid #b84030; }
+  .quiz-actions { display: flex; gap: 8px; margin-top: 1rem; flex-wrap: wrap; }
+
+  .final-card {
+    background: #fff;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 2.5rem;
+    text-align: center;
+    animation: slideIn 0.3s ease;
+  }
+  .final-score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .final-score-sub { font-size: 14px; color: var(--ink-muted); margin-bottom: 0.5rem; }
+  .final-msg {
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 13px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── HIDDEN ── */
+  .hidden { display: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    header { padding: 1.5rem 1rem 1.25rem; }
+    main { padding: 1.25rem 1rem; }
+    nav { padding: 0 1rem; }
+    .progress-wrap { padding: 0.75rem 1rem; }
+    .tab { padding: 0.75rem 0.85rem; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-ornament">Liceo — Geostoria</div>
+  <h1>Da Augusto all'Ottocento</h1>
+  <p class="subtitle">Guida al ripasso per l'esame</p>
+</header>
+
+<div class="progress-wrap">
+  <span class="progress-label">Argomenti studiati</span>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-count" id="progressCount">0 / 0</span>
+</div>
+
+<nav id="nav">
+  <button class="tab active" onclick="switchSection('romana')">Età Romana</button>
+  <button class="tab" onclick="switchSection('medioevo')">Medioevo</button>
+  <button class="tab" onclick="switchSection('moderna')">Età Moderna</button>
+  <button class="tab" onclick="switchSection('ottocento')">Ottocento</button>
+  <button class="tab" onclick="switchSection('timeline')">Linea del Tempo</button>
+  <button class="tab" onclick="switchSection('quiz')">Quiz ✦</button>
+</nav>
+
+<main>
+  <div id="contentArea"></div>
+</main>
+
+<script>
+const DATA = {
+  romana: {
+    label: "Età Romana",
+    era: "27 a.C. – 476 d.C.",
+    topics: [
+      {
+        id: "augusto",
+        title: "Augusto e il Principato",
+        date: "27 a.C. – 14 d.C.",
+        body: `<p>Ottaviano <strong>Augusto</strong> fu il primo imperatore romano de facto, pur mantenendo le forme della repubblica. Dopo la vittoria su Antonio e Cleopatra (31 a.C.), ottenne dal Senato i titoli di <strong>Princeps</strong> e <strong>Augustus</strong>.</p>
+<p>Concentrò nelle sue mani il <strong>potere tribunizio</strong> (sacrosanto, inviolabile), l'<strong>imperium proconsolare</strong> (controllo dell'esercito) e il <strong>pontificato massimo</strong>. Una monarchia mascherata da res publica.</p>
+<p>Promosse la <strong>Pax Augusta</strong>, la riforma dell'esercito con le legioni stabili e i limes, e un vasto programma culturale (Virgilio, Orazio, Ovidio).</p>`
+      },
+      {
+        id: "pax",
+        title: "La Pax Romana e i Flavi",
+        date: "I – II sec. d.C.",
+        body: `<p>Il periodo tra Augusto e Marco Aurelio (27 a.C. – 180 d.C.) è detto <strong>Pax Romana</strong>: due secoli di relativa stabilità, prosperità e espansione. L'impero raggiunse la sua massima estensione con <strong>Traiano</strong>.</p>
+<p>I <strong>Flavi</strong> (Vespasiano, Tito, Domiziano) consolidarono il potere imperiale dopo la guerra civile del 69 d.C. Vespasiano avviò la costruzione del <strong>Colosseo</strong>. Tito gestì l'eruzione del Vesuvio (79 d.C.).</p>
+<p>Gli <strong>Antonini</strong> (Nerva, Traiano, Adriano, Antonino Pio, Marco Aurelio) sono considerati l'apice dell'Impero: buona amministrazione, espansione territoriale, politica filellena.</p>`
+      },
+      {
+        id: "crisi3",
+        title: "La crisi del III secolo",
+        date: "235 – 284 d.C.",
+        body: `<p>Cinquant'anni di <strong>anarchia militare</strong>: oltre venti imperatori si susseguono, spesso nominati dai soldati e assassinati dopo poco. L'impero si frantuma in tre blocchi.</p>
+<p>Cause: pressioni esterne (Germani, Persiani Sassanidi), epidemia di peste antonina, crisi economica, svalutazione monetaria, instabilità politica cronica.</p>
+<p><strong>Diocleziano</strong> (284–305) pose fine alla crisi con la <strong>Tetrarchia</strong>: l'impero diviso tra due Augusti e due Cesari, vaste riforme burocratiche e fiscali, persecuzione dei cristiani.</p>`
+      },
+      {
+        id: "costantino",
+        title: "Costantino e il Cristianesimo",
+        date: "306 – 337 d.C.",
+        body: `<p><strong>Costantino I</strong> riunificò l'impero dopo una serie di guerre civili. Con l'<strong>Editto di Milano</strong> (313 d.C.) garantì la libertà di culto ai cristiani, segnando una svolta epocale.</p>
+<p>Fondò <strong>Costantinopoli</strong> (330 d.C.) sull'antico sito di Bisanzio: nuova capitale strategica tra Europa e Asia. Convocò il <strong>Concilio di Nicea</strong> (325 d.C.) per risolvere le dispute dottrinali cristiane.</p>
+<p>Si battezzò solo in punto di morte. Il Cristianesimo diventò religione di Stato con <strong>Teodosio I</strong> (Editto di Tessalonica, 380 d.C.).</p>`
+      },
+      {
+        id: "caduta",
+        title: "Caduta dell'Impero d'Occidente",
+        date: "476 d.C.",
+        body: `<p>Nel 476 d.C. <strong>Odoacre</strong>, capo degli Eruli, depone l'ultimo imperatore romano d'Occidente, <strong>Romolo Augustolo</strong>. Data simbolica: fine dell'Antichità.</p>
+<p>Cause profonde: crisi economica e demografica, invasioni barbariche (Visigoti, Vandali, Unni con Attila), divisione dell'Impero (395 d.C.), dipendenza dai federati germanici, crisi del sistema fiscale.</p>
+<p>L'Oriente sopravvive come <strong>Impero Bizantino</strong> fino al 1453. Teodorico (Ostrogoti) governa l'Italia mantenendo istituzioni romane.</p>`
+      }
+    ]
+  },
+  medioevo: {
+    label: "Medioevo",
+    era: "V – XV sec.",
+    topics: [
+      {
+        id: "longobardi",
+        title: "I Longobardi in Italia",
+        date: "568 – 774 d.C.",
+        body: `<p>Nel 568 d.C. i <strong>Longobardi</strong> guidati da Alboino invadono l'Italia, dividendola tra aree sotto il loro controllo e zone bizantine (Ravenna, Roma, Napoli, Sicilia).</p>
+<p>La penisola si frammenta: regno longobardo al Nord (Pavia capitale), ducati di Spoleto e Benevento al Centro-Sud, corridoi bizantini. Questa divisione influenzerà l'Italia per secoli.</p>
+<p>Carlo Magno sconfisse l'ultimo re longobardo <strong>Desiderio</strong> nel 774, diventando "Re dei Franchi e dei Longobardi".</p>`
+      },
+      {
+        id: "carlo",
+        title: "Carlo Magno e l'Impero Carolingio",
+        date: "768 – 814 d.C.",
+        body: `<p><strong>Carlo Magno</strong>, re dei Franchi, viene incoronato imperatore da Leone III a Roma nell'<strong>800 d.C.</strong>, restaurando simbolicamente l'Impero Romano d'Occidente.</p>
+<p>Organizzò l'impero con i <strong>conti</strong> e i <strong>missi dominici</strong> (ispettori itineranti). Promosse la <strong>Rinascita Carolingia</strong>: scuole nei monasteri, scrittura carolina, cultura latina.</p>
+<p>Alla sua morte, il Trattato di Verdun (843) divise l'impero tra i tre nipoti: Francia, Germania e Lotaringia (Italia). Origine dei moderni stati nazionali europei.</p>`
+      },
+      {
+        id: "feudalesimo",
+        title: "Il sistema feudale",
+        date: "IX – XI sec.",
+        body: `<p>Il feudalesimo è il sistema politico-sociale dell'Europa medievale, basato su rapporti di fedeltà personale. Il <strong>signore</strong> concede il <strong>feudo</strong> (terra) al <strong>vassallo</strong> in cambio di servizi militari e fedeltà.</p>
+<p>La cerimonia di <strong>omaggio e investitura</strong> sanciva il legame. I feudi erano spesso ereditari, creando una piramide: re → grandi signori → cavalieri → servi.</p>
+<p>Il sistema frammentò il potere politico e creò un'economia chiusa, basata sull'autoconsumo e il lavoro dei <strong>servi della gleba</strong>, legati alla terra e non liberi di spostarsi.</p>`
+      },
+      {
+        id: "crociate",
+        title: "Le Crociate",
+        date: "1096 – 1291",
+        body: `<p>Nel 1095 papa <strong>Urbano II</strong> lancia la Prima Crociata a Clermont: liberare il Santo Sepolcro dai Turchi Selgiuchidi. Nel 1099 la crociata conquista Gerusalemme con un massacro.</p>
+<p>Seguono 7 crociate principali. La IV (1204) punta su Costantinopoli cristiana e la saccheggia. Nel 1291 cade Acri, ultimo baluardo crociato in Terra Santa.</p>
+<p>Conseguenze: scambi commerciali con l'Oriente, crescita delle città-stato italiane (Genova, Venezia), diffusione di cultura islamica (algebra, medicina) in Europa.</p>`
+      },
+      {
+        id: "peste",
+        title: "La Peste Nera",
+        date: "1347 – 1353",
+        body: `<p>Arrivata dall'Asia, la <strong>Peste Bubbonica</strong> uccise tra il 30 e il 50% della popolazione europea in pochi anni. Prima via: le navi genovesi a Messina (1347).</p>
+<p>Conseguenze enormi: crollo demografico, crisi del sistema feudale, carenza di manodopera (aumento dei salari), rinnovamento culturale (tema della morte — Decameron di Boccaccio).</p>
+<p>Cambiò l'Europa più di qualsiasi guerra medievale: l'individuo si emancipa, il mercante cresce, la Chiesa perde autorità morale. Fine anticipata del Medioevo.</p>`
+      }
+    ]
+  },
+  moderna: {
+    label: "Età Moderna",
+    era: "XV – XVIII sec.",
+    topics: [
+      {
+        id: "umanesimo",
+        title: "Umanesimo e Rinascimento",
+        date: "XIV – XVI sec.",
+        body: `<p>L'<strong>Umanesimo</strong> nasce in Italia nel Trecento con Petrarca: riscoperta dei classici latini e greci, centralità dell'uomo (dignitas hominis), critica filologica dei testi antichi.</p>
+<p>Il <strong>Rinascimento</strong> (XV–XVI sec.) porta questa rivoluzione culturale in arte, architettura, scienza. Firenze è il cuore: i Medici mecenatismo Botticelli, Leonardo, Michelangelo.</p>
+<p>Invenzioni decisive: la <strong>stampa a caratteri mobili</strong> di Gutenberg (1450 ca.) diffonde la cultura a prezzi accessibili, rivoluzionando la comunicazione. La prospettiva rinnovava la visione dell'arte.</p>`
+      },
+      {
+        id: "scoperte",
+        title: "Le scoperte geografiche",
+        date: "1492 – 1522",
+        body: `<p>Nel <strong>1492</strong> Cristoforo <strong>Colombo</strong>, finanziato dalla Spagna, raggiunge le Americhe credendo di aver trovato le Indie. Nel 1497 Vasco da Gama apre la rotta per l'India circumnavigando l'Africa.</p>
+<p>Nel 1519–22 <strong>Magellano-Elcano</strong> completano la prima circumnavigazione del globo. Il Trattato di Tordesillas (1494) divide il mondo tra Spagna e Portogallo.</p>
+<p>Conseguenze: sistema coloniale, genocidio delle popolazioni native, trasferimento di oro e argento, nascita dell'economia atlantica, rivoluzione dei prezzi in Europa.</p>`
+      },
+      {
+        id: "riforma",
+        title: "Riforma Protestante",
+        date: "1517 – 1648",
+        body: `<p>Nel 1517 <strong>Martin Lutero</strong> affigge le 95 tesi a Wittenberg, denunciando la corruzione della Chiesa (soprattutto le <strong>indulgenze</strong>). Il messaggio si diffonde grazie alla stampa.</p>
+<p>La Riforma si divide: <strong>luteranesimo</strong> (Germania), <strong>calvinismo</strong> (Svizzera, Francia, Olanda), <strong>anglicanesimo</strong> (Inghilterra, con Enrico VIII per ragioni politiche).</p>
+<p>La <strong>Controriforma</strong> risponde: Concilio di Trento (1545–63), Compagnia di Gesù (Gesuiti), Inquisizione. L'Europa si divide religiosamente — Guerra dei Trent'anni (1618–48).</p>`
+      },
+      {
+        id: "assolutismo",
+        title: "L'assolutismo e Luigi XIV",
+        date: "XVII sec.",
+        body: `<p>L'assolutismo è la teoria politica che concentra ogni potere nel sovrano. Il suo modello perfetto è <strong>Luigi XIV di Francia</strong> (1643–1715), il "Re Sole": "L'État, c'est moi".</p>
+<p>Versailles, costruita per controllare la nobiltà, diventa il centro della corte. Le arti, la moda, la cultura francese dominano l'Europa. L'esercito permanente è enorme.</p>
+<p>Il pensiero alternativo: <strong>Locke</strong> (sovranità popolare, diritti naturali), <strong>Montesquieu</strong> (separazione dei poteri) pongono le basi dell'Illuminismo e delle future rivoluzioni.</p>`
+      },
+      {
+        id: "rivoluzione_fr",
+        title: "Rivoluzione Francese",
+        date: "1789 – 1799",
+        body: `<p>Il 14 luglio <strong>1789</strong>, la presa della Bastiglia segna l'inizio della Rivoluzione. Cause: crisi finanziaria dello Stato, diseguaglianze del sistema dei tre stati, Illuminismo.</p>
+<p>Fasi: monarchia costituzionale (1789–92) → Repubblica giacobina e il <strong>Terrore</strong> di Robespierre (1793–94) → Direttorio (1795–99). La Dichiarazione dei Diritti dell'Uomo e del Cittadino cambia la storia.</p>
+<p>Tre principi: <strong>Liberté, Égalité, Fraternité</strong>. Nasce la politica moderna: destra/sinistra, partiti, nazionalismo, opinione pubblica, cittadinanza.</p>`
+      }
+    ]
+  },
+  ottocento: {
+    label: "Ottocento",
+    era: "XIX sec.",
+    topics: [
+      {
+        id: "napoleon",
+        title: "Napoleone Bonaparte",
+        date: "1799 – 1815",
+        body: `<p>Dopo il colpo di Stato del 18 brumaio 1799, Napoleone diventa Console, poi nel 1804 si <strong>autoincoronò imperatore</strong> a Notre-Dame davanti a Pio VII.</p>
+<p>Conquiste: quasi tutta l'Europa. Riforme durature: <strong>Codice Napoleonico</strong> (base del diritto civile moderno), prefetture, lycées, Banca di Francia. Diffuse i principi rivoluzionari in Europa.</p>
+<p>La disfatta in Russia (1812) e Waterloo (1815) portano all'esilio a Sant'Elena. Il <strong>Congresso di Vienna</strong> (1815) ridisegna l'Europa secondo legittimità e equilibrio.</p>`
+      },
+      {
+        id: "risorgimento",
+        title: "Risorgimento italiano",
+        date: "1815 – 1870",
+        body: `<p>Il percorso verso l'unità d'Italia. Figure chiave: <strong>Mazzini</strong> (Giovine Italia, ideale repubblicano), <strong>Cavour</strong> (premier piemontese, politica diplomatica), <strong>Garibaldi</strong> (Spedizione dei Mille, 1860).</p>
+<p>Il 1848 è l'anno dei moti rivoluzionari in tutta Europa. In Italia falliscono, ma pongono le basi. La seconda guerra d'indipendenza (1859) con la Francia porta la Lombardia al Piemonte.</p>
+<p>Il <strong>17 marzo 1861</strong>: proclamazione del Regno d'Italia con Vittorio Emanuele II. Roma capitale nel 1871 dopo la presa di Porta Pia (20 settembre 1870).</p>`
+      },
+      {
+        id: "rivind",
+        title: "Rivoluzione Industriale",
+        date: "1760 – 1850",
+        body: `<p>Nata in <strong>Inghilterra</strong>, la Rivoluzione Industriale trasforma la produzione: dalla manifattura artigianale alla fabbrica con macchine. La macchina a vapore di Watt (1769) è il simbolo.</p>
+<p>Settori chiave: tessile (filatoio meccanico), siderurgia (coke), trasporti (ferrovia: Stephenson, 1825). Nasce il <strong>proletariato</strong> urbano, il lavoro minorile, le condizioni disumane.</p>
+<p>Risposta politica: <strong>socialismo</strong> e <strong>marxismo</strong> (Manifesto del Partito Comunista, 1848 — Marx ed Engels). Nasce la questione sociale che dominerà il XIX e XX secolo.</p>`
+      },
+      {
+        id: "nazioni",
+        title: "Nazionalismo e stati nazione",
+        date: "XIX sec.",
+        body: `<p>Il <strong>nazionalismo</strong> è l'ideologia che identifica nazione e Stato: ogni popolo con lingua e cultura comune ha diritto a un proprio stato. Nasce con la Rivoluzione Francese.</p>
+<p>Porta all'unificazione di <strong>Italia</strong> (1861) e <strong>Germania</strong> (1871 — Bismarck, "ferro e sangue"). Porta anche alla dissoluzione degli imperi multinazionali (Asburgo, Ottomano).</p>
+<p>Risvolto oscuro: diventa giustificazione per guerre di conquista, colonialismo "civilizzatore", antisemitismo. Semi del XX secolo tragico già piantati nell'Ottocento.</p>`
+      }
+    ]
+  }
+};
+
+const QUIZ = [
+  { q: "In quale anno Ottaviano ottenne il titolo di 'Augustus' dal Senato?", opts: ["44 a.C.","27 a.C.","31 a.C.","14 a.C."], ans: 1, exp: "Il 16 gennaio 27 a.C. il Senato conferì il titolo di Augustus a Ottaviano, data convenzionale dell'inizio del Principato romano." },
+  { q: "Come si chiamava il sistema di governo introdotto da Diocleziano nel 284 d.C.?", opts: ["Principato","Dominato","Tetrarchia","Diarchia"], ans: 2, exp: "La Tetrarchia prevedeva la divisione del governo tra due Augusti e due Cesari, per meglio amministrare e difendere l'enorme impero." },
+  { q: "Chi depose l'ultimo imperatore romano d'Occidente nel 476 d.C.?", opts: ["Attila","Teodorico","Odoacre","Alarico"], ans: 2, exp: "Odoacre, capo degli Eruli, depose Romolo Augustolo nel 476 d.C., data convenzionale della fine dell'Antichità." },
+  { q: "Dove fu incoronato imperatore Carlo Magno nell'800 d.C.?", opts: ["Aquisgrana","Parigi","Roma","Milano"], ans: 2, exp: "Carlo Magno fu incoronato da papa Leone III nella basilica di San Pietro a Roma, la notte di Natale dell'anno 800." },
+  { q: "Come si chiamava la cerimonia con cui il vassallo giurava fedeltà al signore nel sistema feudale?", opts: ["Investitura","Omaggio e investitura","Commendatio","Giuramento cavalleresco"], ans: 1, exp: "La cerimonia di omaggio e investitura sanciva il legame vassallatico: il vassallo si inginocchiava e riceveva il simbolo del feudo." },
+  { q: "In quale città le navi genovesi portarono la Peste Nera in Italia nel 1347?", opts: ["Genova","Venezia","Napoli","Messina"], ans: 3, exp: "Le navi genovesi provenienti dal Mar Nero arrivarono a Messina nell'ottobre 1347, diffondendo la peste bubbonica in Europa." },
+  { q: "Quale trattato nel 1494 divise il mondo tra Spagna e Portogallo?", opts: ["Trattato di Utrecht","Trattato di Tordesillas","Trattato di Westfalia","Trattato di Lisbona"], ans: 1, exp: "Il Trattato di Tordesillas (1494) fissò un meridiano immaginario a 370 leghe a ovest delle Azzorre, dividendo le aree di influenza." },
+  { q: "In quale città Lutero affisse le 95 tesi nel 1517?", opts: ["Ginevra","Augusta","Wittenberg","Erfurt"], ans: 2, exp: "Lutero affisse le sue 95 tesi alla porta della Schlosskirche di Wittenberg il 31 ottobre 1517, dando inizio alla Riforma." },
+  { q: "Quale evento simboleggia l'inizio della Rivoluzione Francese nel 1789?", opts: ["Esecuzione di Luigi XVI","Presa della Bastiglia","Dichiarazione dei Diritti","Marcia su Versailles"], ans: 1, exp: "La presa della Bastiglia il 14 luglio 1789 è il simbolo della Rivoluzione Francese, oggi festa nazionale francese." },
+  { q: "Quando fu proclamato il Regno d'Italia unificato?", opts: ["1848","1860","1861","1870"], ans: 2, exp: "Il 17 marzo 1861 fu proclamato il Regno d'Italia con Torino capitale e Vittorio Emanuele II primo re d'Italia." },
+  { q: "In quale paese nacque la Rivoluzione Industriale?", opts: ["Francia","Germania","Belgio","Inghilterra"], ans: 3, exp: "L'Inghilterra fu la culla grazie alle sue risorse (carbone, ferro), sistema bancario, politica coloniale e cultura protestante del lavoro." },
+  { q: "Chi fondò la Giovine Italia per promuovere l'unificazione repubblicana?", opts: ["Cavour","Garibaldi","Mazzini","Vittorio Emanuele II"], ans: 2, exp: "Giuseppe Mazzini fondò la Giovine Italia nel 1831 a Marsiglia: obiettivo una repubblica italiana unita, nata dalla volontà popolare." }
+];
+
+let currentSection = 'romana';
+let openTopic = null;
+let done = new Set();
+let quizIdx = 0;
+let quizAnswered = false;
+let quizScore = 0;
+
+function totalTopics() {
+  return Object.values(DATA).reduce((a, s) => a + s.topics.length, 0);
+}
+
+function updateProgress() {
+  const total = totalTopics();
+  const pct = total ? (done.size / total * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = done.size + ' / ' + total;
+}
+
+function switchSection(key) {
+  currentSection = key;
+  openTopic = null;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const tabs = document.querySelectorAll('.tab');
+  const order = ['romana','medioevo','moderna','ottocento','timeline','quiz'];
+  const idx = order.indexOf(key);
+  if (tabs[idx]) tabs[idx].classList.add('active');
+  render();
+}
+
+function render() {
+  const el = document.getElementById('contentArea');
+  if (currentSection === 'timeline') { el.innerHTML = renderTimeline(); return; }
+  if (currentSection === 'quiz') { el.innerHTML = renderQuizHTML(); bindQuiz(); return; }
+  const sec = DATA[currentSection];
+  let html = `<div class="section-heading"><h2>${sec.label}</h2><span class="section-era">${sec.era}</span></div>`;
+
+  if (openTopic) {
+    const t = sec.topics.find(x => x.id === openTopic);
+    html += `<div class="detail-panel">
+      <div class="detail-top">
+        <div>
+          <div class="detail-title">${t.title}</div>
+          <div class="detail-date">${t.date}</div>
+        </div>
+        <button class="close-btn" onclick="closeTopic()">✕ chiudi</button>
+      </div>
+      <div class="detail-body">${t.body}</div>
+      <div class="detail-actions">
+        <button class="btn-primary" onclick="markDone('${t.id}')">Segna come studiato ✓</button>
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="topics-grid">`;
+  sec.topics.forEach(t => {
+    html += `<div class="topic-card ${done.has(t.id)?'done':''}" onclick="openTopicFn('${t.id}')">
+      ${done.has(t.id) ? '<span class="done-mark">✓ Studiato</span>' : ''}
+      <div class="topic-name">${t.title}</div>
+      <div class="topic-date">${t.date}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+function openTopicFn(id) {
+  openTopic = id;
+  render();
+  document.getElementById('contentArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeTopic() { openTopic = null; render(); }
+
+function markDone(id) {
+  done.add(id);
+  updateProgress();
+  closeTopic();
+}
+
+function renderTimeline() {
+  const groups = [
+    { label: "Impero Romano", items: [
+      { y: "27 a.C.", e: "Augusto diventa Princeps", d: "Inizio del Principato romano" },
+      { y: "284 d.C.", e: "Tetrarchia di Diocleziano", d: "Riforma dell'impero in crisi" },
+      { y: "313 d.C.", e: "Editto di Milano", d: "Libertà di culto ai cristiani" },
+      { y: "395 d.C.", e: "Divisione dell'Impero", d: "Arcadio (Oriente) e Onorio (Occidente)" },
+      { y: "476 d.C.", e: "Caduta dell'Impero d'Occidente", d: "Odoacre depone Romolo Augustolo" }
+    ]},
+    { label: "Medioevo", items: [
+      { y: "568 d.C.", e: "Invasione longobarda dell'Italia", d: "Alboino varca le Alpi" },
+      { y: "800 d.C.", e: "Incoronazione di Carlo Magno", d: "Restaurazione simbolica dell'Impero" },
+      { y: "843", e: "Trattato di Verdun", d: "L'Impero Carolingio si divide" },
+      { y: "1096", e: "Prima Crociata", d: "Urbano II lancia la guerra santa" },
+      { y: "1347", e: "Peste Nera in Europa", d: "Uccide il 30–50% della popolazione" }
+    ]},
+    { label: "Età Moderna", items: [
+      { y: "1450 ca.", e: "Stampa di Gutenberg", d: "Rivoluzione della comunicazione" },
+      { y: "1492", e: "Colombo raggiunge le Americhe", d: "Inizio delle grandi esplorazioni" },
+      { y: "1517", e: "Le 95 Tesi di Lutero", d: "Inizio della Riforma Protestante" },
+      { y: "1545", e: "Concilio di Trento", d: "Avvio della Controriforma cattolica" },
+      { y: "1789", e: "Rivoluzione Francese", d: "Presa della Bastiglia, 14 luglio" }
+    ]},
+    { label: "Ottocento", items: [
+      { y: "1799", e: "Napoleone al potere", d: "Colpo di Stato del 18 brumaio" },
+      { y: "1815", e: "Congresso di Vienna", d: "Ridisegno dell'Europa post-napoleonica" },
+      { y: "1825", e: "Prima ferrovia commerciale", d: "Stephenson — Liverpool-Manchester" },
+      { y: "1848", e: "Primavera dei Popoli", d: "Rivoluzioni in tutta Europa" },
+      { y: "1861", e: "Unità d'Italia", d: "Proclamazione del Regno d'Italia" },
+      { y: "1871", e: "Unità della Germania", d: "Bismarck — Impero Tedesco a Versailles" }
+    ]}
+  ];
+
+  let html = `<div class="section-heading"><h2>Linea del Tempo</h2><span class="section-era">27 a.C. – XIX sec.</span></div>`;
+  html += `<div class="timeline">`;
+  groups.forEach(g => {
+    html += `<div class="tl-group"><div class="tl-group-label">${g.label}</div>`;
+    g.items.forEach(item => {
+      html += `<div class="tl-item">
+        <div class="tl-dot"></div>
+        <div><span class="tl-year">${item.y}</span><span class="tl-event">${item.e}</span></div>
+        <div class="tl-desc">${item.d}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderQuizHTML() {
+  if (quizIdx >= QUIZ.length) {
+    const pct = Math.round(quizScore / QUIZ.length * 100);
+    const msg = pct >= 85 ? "Eccellente! Sei pronto per l'esame." : pct >= 65 ? "Bene, ma ripassа ancora qualche argomento." : "Continua a studiare — puoi farcela!";
+    return `<div class="section-heading"><h2>Quiz di ripasso</h2></div>
+    <div class="final-card">
+      <div class="final-score-num">${quizScore}/${QUIZ.length}</div>
+      <div class="final-score-sub">${pct}% di risposte corrette</div>
+      <div class="final-msg">${msg}</div>
+      <button class="btn-primary" onclick="restartQuiz()">Ricomincia il quiz</button>
+    </div>`;
+  }
+  const q = QUIZ[quizIdx];
+  return `<div class="section-heading"><h2>Quiz di ripasso</h2></div>
+  <div class="quiz-wrap">
+    <div class="quiz-header">
+      <span class="quiz-counter">Domanda ${quizIdx+1} di ${QUIZ.length}</span>
+      <span class="quiz-score">Punteggio: <span>${quizScore}</span></span>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,i) => `<button class="quiz-opt" id="qopt${i}" onclick="answerQuiz(${i})">${o}</button>`).join('')}
+      </div>
+      <div id="qfeedback"></div>
+    </div>
+    <div class="quiz-actions" id="quizActions"></div>
+  </div>`;
+}
+
+function bindQuiz() { /* bindings done inline */ }
+
+function answerQuiz(i) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = QUIZ[quizIdx];
+  for (let j = 0; j < q.opts.length; j++) {
+    const btn = document.getElementById('qopt' + j);
+    if (btn) {
+      btn.disabled = true;
+      if (j === q.ans) btn.classList.add('correct');
+      else if (j === i) btn.classList.add('wrong');
+    }
+  }
+  if (i === q.ans) quizScore++;
+  const fb = document.getElementById('qfeedback');
+  if (fb) {
+    fb.className = 'quiz-feedback ' + (i === q.ans ? 'ok' : 'ko');
+    fb.innerHTML = (i === q.ans ? '<strong>Esatto!</strong> ' : '<strong>Sbagliato.</strong> ') + q.exp;
+  }
+  const act = document.getElementById('quizActions');
+  if (act) {
+    act.innerHTML = `<button class="btn-primary" onclick="nextQuestion()">
+      ${quizIdx + 1 < QUIZ.length ? 'Prossima domanda →' : 'Vedi risultato →'}
+    </button>`;
+  }
+}
+
+function nextQuestion() {
+  quizIdx++;
+  quizAnswered = false;
+  const el = document.getElementById('contentArea');
+  el.innerHTML = renderQuizHTML();
+}
+
+function restartQuiz() {
+  quizIdx = 0;
+  quizScore = 0;
+  quizAnswered = false;
+  render();
+}
+
+// Init
+render();
+updateProgress();
+</script>
+</body>
+</html>
